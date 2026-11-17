@@ -4,6 +4,7 @@ namespace MailPlus\MailPlus\Model;
 use Magento\Framework\Api\Search\FilterGroup;
 use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Api\SearchResultsFactory;
+use Magento\Newsletter\Model\ResourceModel\Subscriber as SubscriberResource;
 use Magento\Newsletter\Model\ResourceModel\Subscriber\Collection;
 use Magento\Newsletter\Model\ResourceModel\Subscriber\CollectionFactory;
 use MailPlus\MailPlus\Api\SubscriberRepositoryInterface;
@@ -14,15 +15,19 @@ class SubscriberRepository implements SubscriberRepositoryInterface
     protected $_subscriberCollectionFactory;
     protected $_searchResultsFactory;
     private $_subscriberFactory;
+    private $subscriberResource;
 
 
-    public function __construct(CollectionFactory $subscriberCollectionFactory,
-                                SearchResultsFactory $searchResultsFactory,
-                                \Magento\Newsletter\Model\SubscriberFactory $subscriberFactory)
-    {
+    public function __construct(
+        CollectionFactory $subscriberCollectionFactory,
+        SearchResultsFactory $searchResultsFactory,
+        \Magento\Newsletter\Model\SubscriberFactory $subscriberFactory,
+        SubscriberResource $subscriberResource
+    ) {
         $this->_subscriberCollectionFactory = $subscriberCollectionFactory;
         $this->_searchResultsFactory = $searchResultsFactory;
         $this->_subscriberFactory = $subscriberFactory;
+        $this->subscriberResource = $subscriberResource;
     }
 
     /**
@@ -64,14 +69,14 @@ class SubscriberRepository implements SubscriberRepositoryInterface
     protected function addFilterGroupToCollection(
         FilterGroup $filterGroup,
         Collection $collection
-    )
-    {
+    ) {
         $fields = [];
         $conditions = [];
         foreach ($filterGroup->getFilters() as $filter) {
             $fields[] = $filter->getField();
             $conditionType = $filter->getConditionType() ? $filter->getConditionType() : 'eq';
-            $conditionValue = $conditionType != 'in' && $conditionType != 'nin' ? $filter->getValue() : explode(',', $filter->getValue());
+            $conditionValue = $conditionType != 'in' && $conditionType != 'nin'
+                ? $filter->getValue() : explode(',', $filter->getValue());
             $conditions[] = [$conditionType => $conditionValue];
         }
 
@@ -91,13 +96,14 @@ class SubscriberRepository implements SubscriberRepositoryInterface
             /**
              * @var \Magento\Newsletter\Model\Subscriber
              */
-            $loadedSubscriber = $this->_subscriberFactory->create()->load(
-                $subscriber->getId()
-            );
+            $loadedSubscriber = $this->_subscriberFactory->create();
+            $this->subscriberResource->load($loadedSubscriber, $subscriber->getId());
 
             $loadedSubscriber->setStatus($subscriber->getStatus());
-            $loadedSubscriber->save();
+            $this->subscriberResource->save($loadedSubscriber);
             return $loadedSubscriber;
         }
+
+        return $subscriber;
     }
 }

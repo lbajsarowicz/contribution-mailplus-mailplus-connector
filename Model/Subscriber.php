@@ -5,7 +5,7 @@ class Subscriber extends \Magento\Newsletter\Model\Subscriber implements \MailPl
 {
     public function setId($value)
     {
-        parent::setId($value);
+        return parent::setId($value);
     }
 
     public function getId()
@@ -15,7 +15,7 @@ class Subscriber extends \Magento\Newsletter\Model\Subscriber implements \MailPl
 
     public function setEmail($value)
     {
-       parent::setEmail($value);
+        return parent::setEmail($value);
     }
 
     public function getEmail()
@@ -25,7 +25,7 @@ class Subscriber extends \Magento\Newsletter\Model\Subscriber implements \MailPl
 
     public function setStoreId($value)
     {
-        parent::setStoreId($value);
+        return parent::setStoreId($value);
     }
 
     public function getStoreId()
@@ -35,7 +35,7 @@ class Subscriber extends \Magento\Newsletter\Model\Subscriber implements \MailPl
 
     public function setWebsiteId($value)
     {
-        parent::setWebsiteId($value);
+        return parent::setWebsiteId($value);
     }
 
     public function getWebsiteId()
@@ -45,7 +45,7 @@ class Subscriber extends \Magento\Newsletter\Model\Subscriber implements \MailPl
 
     public function setCustomerId($value)
     {
-       parent::setCustomerId($value);
+        return parent::setCustomerId($value);
     }
 
     public function getCustomerId()
@@ -55,12 +55,11 @@ class Subscriber extends \Magento\Newsletter\Model\Subscriber implements \MailPl
 
     public function setStatus($value)
     {
-        parent::setStatus($value);
+        return parent::setStatus($value);
     }
 
     public function getStatus()
     {
         return parent::getStatus();
     }
-
 }

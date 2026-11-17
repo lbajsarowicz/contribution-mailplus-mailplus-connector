@@ -29,11 +29,21 @@
     }
   },
   "config": {
-    "vendor-dir": "../vendor"
+    "vendor-dir": "../vendor",
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true,
+      "phpstan/extension-installer": true
+    }
   },
   "archive": {
     "exclude": [
       "/vagrant", "auth.json", "*.tar"
     ]
+  },
+  "require-dev": {
+    "magento/magento-coding-standard": "^41",
+    "phpstan/phpstan": "^2.1",
+    "bitexpert/phpstan-magento": "^0.44",
+    "phpstan/extension-installer": "^1.4"
   }
 }

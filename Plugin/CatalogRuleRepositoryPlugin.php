@@ -6,18 +6,23 @@ use DateTime;
 use Magento\CatalogRule\Api\CatalogRuleRepositoryInterface;
 use MailPlus\MailPlus\Model\CatalogRuleUpdatedAt;
 use MailPlus\MailPlus\Model\CatalogRuleUpdatedAtFactory;
+use MailPlus\MailPlus\Model\ResourceModel\CatalogRuleUpdatedAt as CatalogRuleUpdatedAtResource;
 
 class CatalogRuleRepositoryPlugin
 {
     private $_catalogRuleUpdatedAtFactory;
+    private $catalogRuleUpdatedAtResource;
 
 
     /**
      * CatalogRuleRepositoryPlugin constructor.
      */
-    public function __construct(CatalogRuleUpdatedAtFactory $catalogRuleUpdatedAtFactory)
-    {
+    public function __construct(
+        CatalogRuleUpdatedAtFactory $catalogRuleUpdatedAtFactory,
+        CatalogRuleUpdatedAtResource $catalogRuleUpdatedAtResource
+    ) {
         $this->_catalogRuleUpdatedAtFactory = $catalogRuleUpdatedAtFactory;
+        $this->catalogRuleUpdatedAtResource = $catalogRuleUpdatedAtResource;
     }
 
 
@@ -32,7 +37,7 @@ class CatalogRuleRepositoryPlugin
 
         /** @var CatalogRuleUpdatedAt $ruleUpdatedAt */
         $ruleUpdatedAt = $this->_catalogRuleUpdatedAtFactory->create();
-        $ruleUpdatedAt->load($result->getRuleId());
+        $this->catalogRuleUpdatedAtResource->load($ruleUpdatedAt, $result->getRuleId());
         if (empty($ruleUpdatedAt->getUpdatedAt())) {
             $ruleUpdatedAt->setUpdatedAt($dateTime);
             $ruleUpdatedAt->setCatalogRuleId($result->getRuleId());
@@ -40,7 +45,7 @@ class CatalogRuleRepositoryPlugin
         } else {
             $ruleUpdatedAt->setUpdatedAt($dateTime);
         }
-        $ruleUpdatedAt->save();
+        $this->catalogRuleUpdatedAtResource->save($ruleUpdatedAt);
 
         return $result;
     }
